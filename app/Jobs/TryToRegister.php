@@ -54,6 +54,7 @@ class TryToRegister implements ShouldQueue
 
             if ($registration->starts_at->diffInMinutes(now()) < 30) {
                 $registration->delete();
+                continue;
             }
             try {
                 if (ApiHelper::registerLTicket($registration)) {
