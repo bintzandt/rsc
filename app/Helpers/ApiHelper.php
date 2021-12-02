@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Registration;
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
@@ -77,8 +78,12 @@ class ApiHelper
         });
     }
 
-    public static function getCalendar(User $user): Collection
+    public static function getCalendar(?User $user = null): Collection
     {
+        if (! $user) {
+            $user = Auth::user();
+        }
+
         $url = sprintf(self::BASE_URL, 'agenda', 'getAgenda');
 
         return collect(Http::asMultipart()

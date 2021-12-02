@@ -45,6 +45,22 @@ Route::group(['middleware' => ['auth']], function () {
     });
 
     Route::view('/custom', 'custom')->name('custom');
+    Route::get('/registrations', function () {
+        return view('registrations', [
+            'registrations' => ApiHelper::getCalendar(),
+            'upcomingRegistrations' => Registration::where('user_id', Auth::user()->id)->orderBy('starts_at')->get(),
+        ]);
+    })->name('registrations');
+
+    Route::get('/registrations/{registration}/delete', function (Registration $registration) {
+        if (! $registration->user_id === Auth::user()->id) {
+            throw new Exception('User is not allowed to delete this registration');
+        }
+
+        $registration->delete();
+
+        return redirect()->back();
+    })->name('registrations.delete');
 });
 
 Route::view('/login', 'login', ['users' => User::all()])->name('login');
