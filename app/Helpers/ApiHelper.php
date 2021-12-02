@@ -61,7 +61,6 @@ class ApiHelper
             throw new \Exception($response['error']);
         }
 
-        var_dump($response);
         return true;
     }
 

@@ -16,8 +16,8 @@ class CreateRegistrationsTable extends Migration
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
             $table->string('category');
-            $table->timestamp('starts_at');
-            $table->timestamp('ends_at')->nullable();
+            $table->dateTime('starts_at');
+            $table->dateTime('ends_at')->nullable();
             $table->integer('registration_id')->nullable();
             $table->integer('offer_id')->nullable();
             $table->integer('pool_id')->nullable();
