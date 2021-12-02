@@ -10,7 +10,9 @@
     @endforeach
     <h2>Upcoming registrations</h2>
     @foreach($upcomingRegistrations as $upcomingRegistration)
-        <span>{{ $upcomingRegistration->category }} - {{ $upcomingRegistration->starts_at->toDateTimeString('minute') }}</span>
-        <a href="{{ route('registrations.delete', $upcomingRegistration) }}">Delete</a>
+        <div>
+            <span>{{ $upcomingRegistration->category }} - {{ $upcomingRegistration->starts_at->toDateTimeString('minute') }}</span>
+            <a href="{{ route('registrations.delete', $upcomingRegistration) }}">Delete</a>
+        </div>
     @endforeach
 @endsection
