@@ -67,7 +67,7 @@ class ApiHelper
         return Cache::remember('locations', 3600, function () {
             $url = sprintf(self::BASE_URL, 'locatie', 'getLocaties');
 
-            if (! User::first()){
+            if (! User::first()) {
                 return collect([]);
             }
 
@@ -75,6 +75,16 @@ class ApiHelper
                 ->post($url, User::first()->toFormBody())
                 ->json());
         });
+    }
+
+    public static function getCalendar(User $user): Collection
+    {
+        $url = sprintf(self::BASE_URL, 'agenda', 'getAgenda');
+
+        return collect(Http::asMultipart()
+            ->post($url, $user->toFormBody())
+            ->json()
+        );
     }
 
     private static function responseContainsError(array $responseData): bool
