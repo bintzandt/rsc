@@ -67,6 +67,10 @@ class ApiHelper
         return Cache::remember('locations', 3600, function () {
             $url = sprintf(self::BASE_URL, 'locatie', 'getLocaties');
 
+            if (! User::first()){
+                return collect([]);
+            }
+
             return collect(Http::asMultipart()
                 ->post($url, User::first()->toFormBody())
                 ->json());
