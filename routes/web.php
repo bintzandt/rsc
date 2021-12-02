@@ -1,5 +1,11 @@
 <?php
 
+use App\Helpers\ApiHelper;
+use App\Models\Registration;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +20,52 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/', [\App\Http\Controllers\App::class, ['index']]);
+    Route::view('/', 'index', [
+        'locations' => ApiHelper::getLocations()->map(function ($location) {
+            return [
+                'id' => $location['laanbodId'],
+                'name' => $location['naam'].' - '.Carbon::createFromTimestamp($location['start'])
+                        ->toDateTimeString('minute'),
+            ];
+        })->sortBy('name'),
+    ]);
+
+    Route::post('/', function (Request $request) {
+        $location = ApiHelper::getLocations()->firstWhere('laanbodId', '=', $request->post('location'));
+        if ($location) {
+            $registration = new Registration;
+            $registration->category = $location['catalogusId'];
+            $registration->starts_at = $location['start'];
+            $registration->user_id = Auth::user()->id;
+            $registration->save();
+        }
+        return redirect()->back();
+    });
+
+    Route::view('/custom', 'custom')->name('custom');
 });
 
-Route::get('/login', [\App\Http\Controllers\App::class, 'login'])->name('login');
+Route::view('/login', 'login', ['users' => User::all()])->name('login');
+Route::post('/login', function (Request $request) {
+    Auth::loginUsingId($request->post('user', true));
+    $request->session()->regenerate();
+
+    return redirect()->intended();
+});
+Route::get('/logout', function (Request $request) {
+    $request->session()->regenerate(true);
+    return redirect()->route('login');
+})->name('logout');
+
+Route::view('/register', 'register')->name('register');
+Route::post('/register', function (Request $request) {
+    $username = $request->post('username');
+    $password = $request->post('password');
+
+    $user = new User;
+    $user->username = $username;
+
+    ApiHelper::signIn($user, $password);
+
+    return redirect()->route('login');
+});

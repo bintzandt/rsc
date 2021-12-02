@@ -4,19 +4,21 @@ namespace App\Helpers;
 
 use App\Models\Registration;
 use App\Models\User;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class ApiHelper
 {
     private const BASE_URL = 'https://publiek.usc.ru.nl/app/api/v1/?module=%s&method=%s';
 
-    public static function signIn(User $user)
+    public static function signIn(User $user, string $password)
     {
         $url = sprintf(self::BASE_URL, 'user', 'logIn');
 
         $response = Http::asMultipart()->post($url, [
             'username' => $user->username,
-            'password' => $user->password,
+            'password' => $password,
         ])->json();
 
         if (self::responseContainsError($response)) {
@@ -25,7 +27,6 @@ class ApiHelper
 
         $user->rsc_token = $response['token'];
         $user->rsc_id = $response['klantId'];
-        $user->name = $response['voornaam'].' '.$response['voorvoegsels'].$response['achternaam'];
         $user->save();
     }
 
@@ -33,10 +34,6 @@ class ApiHelper
     {
         $url = sprintf(self::BASE_URL, 'locatie', 'addLinschrijving');
         $user = $registration->user;
-
-        if (! $user) {
-            self::signIn($user);
-        }
 
         $response = Http::asMultipart()
             ->post($url, [
@@ -65,13 +62,15 @@ class ApiHelper
         return true;
     }
 
-    public static function getLocations(User $user): array
+    public static function getLocations(): Collection
     {
-        $url = sprintf(self::BASE_URL, 'locatie', 'getLocaties');
+        return Cache::remember('locations', 3600, function () {
+            $url = sprintf(self::BASE_URL, 'locatie', 'getLocaties');
 
-        return Http::asMultipart()
-            ->post($url, $user->toFormBody())
-            ->json();
+            return collect(Http::asMultipart()
+                ->post($url, User::first()->toFormBody())
+                ->json());
+        });
     }
 
     private static function responseContainsError(array $responseData): bool

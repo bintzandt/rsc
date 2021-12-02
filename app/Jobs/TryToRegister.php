@@ -37,7 +37,7 @@ class TryToRegister implements ShouldQueue
 
         foreach ($registrations as $registration) {
             if (! $registration->isComplete()) {
-                $location = $this->getLocations()
+                $location = ApiHelper::getLocations()
                     ->first(function ($location) use ($registration) {
                         return $location['catalogusId'] === $registration->category &&
                             $location['start'] == $registration->starts_at->getTimestamp();
@@ -60,12 +60,5 @@ class TryToRegister implements ShouldQueue
                 $registration->delete();
             }
         }
-    }
-
-    public function getLocations()
-    {
-        return Cache::remember('locations', 3600, function () {
-            return collect(ApiHelper::getLocations(User::first()));
-        });
     }
 }
