@@ -21,6 +21,7 @@
     </form>
     {{--    <a href="{{ route('custom') }}">Custom registration</a>--}}
     <a href="{{ route('registrations') }}">My registrations</a>
+    <a href="{{ route('custom') }}">Custom registration</a>
     <a href="{{ route('logout') }}">Logout</a>
 
     <script>

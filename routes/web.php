@@ -44,7 +44,20 @@ Route::group(['middleware' => ['auth']], function () {
         return redirect()->back();
     });
 
-    Route::view('/custom', 'custom')->name('custom');
+    Route::view('/custom', 'custom',
+        ['categories' => ApiHelper::getLocations()->pluck('catalogusId')->unique()->sort()->toArray()]
+    )->name('custom');
+
+    Route::post('/custom', function(Request $request){
+        $registration = new Registration;
+        $registration->category = $request->post('category');
+        $registration->starts_at = $request->post('starts_at');
+        $registration->user_id = Auth::user()->id;
+        $registration->save();
+
+        return redirect()->route('registrations');
+    });
+
     Route::get('/registrations', function () {
         return view('registrations', [
             'registrations' => ApiHelper::getCalendar(),
