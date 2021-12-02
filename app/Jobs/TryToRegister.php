@@ -38,10 +38,10 @@ class TryToRegister implements ShouldQueue
         foreach ($registrations as $registration) {
             if (! $registration->isComplete()) {
                 $location = $this->getLocations()
-                    ->first(fn($location
-                    ) => $location['catalogusId'] === $registration->category &&
-                        $location['start'] == $registration->starts_at->getTimestamp()
-                    );
+                    ->first(function ($location) use ($registration) {
+                        return $location['catalogusId'] === $registration->category &&
+                            $location['start'] == $registration->starts_at->getTimestamp();
+                    });
 
                 if (! $location) {
                     continue;

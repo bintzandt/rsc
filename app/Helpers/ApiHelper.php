@@ -42,13 +42,13 @@ class ApiHelper
                 'klantId' => $user->rsc_id,
                 'token' => $user->rsc_token,
 
-//                klantId:        186627
-//                token:          274eb165a7f5a1d6b2ca85f064874aba5cfec80d
-//                inschrijvingId: 695965
-//                poolId:         13
-//                laanbodId:      19
-//                start:          1626937200
-//                eind:           1626939900
+                //                klantId:        186627
+                //                token:          274eb165a7f5a1d6b2ca85f064874aba5cfec80d
+                //                inschrijvingId: 695965
+                //                poolId:         13
+                //                laanbodId:      19
+                //                start:          1626937200
+                //                eind:           1626939900
                 'inschrijvingId' => $registration->registration_id,
                 'poolId' => $registration->pool_id,
                 'laanbodId' => $registration->offer_id,
