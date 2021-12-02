@@ -26,8 +26,10 @@ Route::group(['middleware' => ['auth']], function () {
                 'id' => $location['planregelId'],
                 'name' => $location['naam'].' - '.Carbon::createFromTimestamp($location['start'])
                         ->toDateTimeString('minute'),
+                'category' => $location['catalogusId'],
             ];
         })->sortBy('name'),
+        'categories' => ApiHelper::getLocations()->pluck('catalogusId')->unique()->sort()->toArray(),
     ]);
 
     Route::post('/', function (Request $request) {
