@@ -23,7 +23,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::view('/', 'index', [
         'locations' => ApiHelper::getLocations()->map(function ($location) {
             return [
-                'id' => $location['laanbodId'],
+                'id' => $location['planregelId'],
                 'name' => $location['naam'].' - '.Carbon::createFromTimestamp($location['start'])
                         ->toDateTimeString('minute'),
             ];
@@ -31,7 +31,7 @@ Route::group(['middleware' => ['auth']], function () {
     ]);
 
     Route::post('/', function (Request $request) {
-        $location = ApiHelper::getLocations()->firstWhere('laanbodId', '=', $request->post('location'));
+        $location = ApiHelper::getLocations()->firstWhere('planregelId', '=', $request->post('location'));
         if ($location) {
             $registration = new Registration;
             $registration->category = $location['catalogusId'];
