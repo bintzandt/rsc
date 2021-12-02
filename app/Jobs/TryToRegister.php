@@ -50,6 +50,8 @@ class TryToRegister implements ShouldQueue
                 $registration->updateFromLocation($location);
             }
 
+            $registration->touch();
+
             if ($registration->starts_at->diffInMinutes(now()) < 30) {
                 $registration->delete();
             }
