@@ -29,11 +29,12 @@ class ApiHelper
         $user->save();
     }
 
-    public static function registerLTicket(User $user, Registration $registration)
+    public static function registerLTicket(Registration $registration)
     {
         $url = sprintf(self::BASE_URL, 'locatie', 'addLinschrijving');
+        $user = $registration->user;
 
-        if (! $user->rsc_id) {
+        if (! $user) {
             self::signIn($user);
         }
 

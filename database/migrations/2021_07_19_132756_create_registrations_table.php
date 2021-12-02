@@ -21,6 +21,7 @@ class CreateRegistrationsTable extends Migration
             $table->integer('registration_id')->nullable();
             $table->integer('offer_id')->nullable();
             $table->integer('pool_id')->nullable();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }

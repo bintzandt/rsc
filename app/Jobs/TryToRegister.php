@@ -56,7 +56,7 @@ class TryToRegister implements ShouldQueue
                 $registration->delete();
             }
 
-            if (ApiHelper::registerLTicket(User::first(), $registration)) {
+            if (ApiHelper::registerLTicket($registration)) {
                 $registration->delete();
             }
         }

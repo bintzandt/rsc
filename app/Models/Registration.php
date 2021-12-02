@@ -12,6 +12,11 @@ class Registration extends Model
 
     protected $dates = ['starts_at', 'ends_at'];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function isComplete(): bool
     {
         return
